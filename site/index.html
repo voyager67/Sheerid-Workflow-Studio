@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#07131f">
+  <meta name="description" content="SheerFlow is an open-source JavaScript workbench for authorized SheerID REST API integrations.">
+  <title>SheerFlow — SheerID Workflow Studio</title>
+  <link rel="icon" href="./assets/sheerflow-banner.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="SheerFlow home">
+      <span class="brand-icon">S</span><span>Sheer<span class="accent">Flow</span></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#features">Features</a>
+      <a href="#demo">Demo</a>
+      <a href="#quick-start">Quick start</a>
+      <a class="nav-cta" href="https://github.com/voyager67/Sheerid-Workflow-Studio">GitHub repository ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse"></span> OPEN-SOURCE JAVASCRIPT PROJECT</div>
+        <h1>Orchestrate every step.<br><span class="gradient-text">Keep every decision auditable.</span></h1>
+        <p class="lede">A developer workbench for authorized SheerID REST API integrations. Coordinate OAuth, verification workflows, organization lookup, document uploads and status tracking from one local dashboard.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://github.com/voyager67/Sheerid-Workflow-Studio">Explore the repository <span>↗</span></a>
+          <a class="button secondary" href="#quick-start">Run the local demo</a>
+        </div>
+        <div class="trust-row"><span>JavaScript · Node.js 22+</span><span>Apache 2.0</span><span>No runtime dependencies</span></div>
+      </div>
+      <div class="hero-art">
+        <img src="./assets/sheerflow-banner.svg" alt="SheerFlow authorized verification workflow from OAuth to auditable status">
+      </div>
+    </section>
+
+    <section class="notice">
+      <div class="notice-mark">i</div>
+      <div><strong>What this GitHub Pages site is — and isn't</strong><p>This is the project's static website and documentation entry point. The actual workbench runs locally with Node.js because verification and upload operations require a private server-side API connection. GitHub Pages cannot host that backend or safely hold your API credentials.</p></div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="section-heading">
+        <div class="eyebrow">BUILT FOR AUTHORIZED WORKFLOWS</div>
+        <h2>One workbench. The complete workflow.</h2>
+        <p>Keep provider operations explicit, observable and under the control of the authorized program operator.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card"><span class="feature-number">01</span><div class="feature-icon">◈</div><h3>Server-side OAuth</h3><p>Client Credentials token handling, in-memory caching and refresh. Secrets never enter browser JavaScript.</p></article>
+        <article class="feature-card"><span class="feature-number">02</span><div class="feature-icon">⌁</div><h3>Verification orchestration</h3><p>Create program verifications, submit program-specific data and track provider workflow states.</p></article>
+        <article class="feature-card"><span class="feature-number">03</span><div class="feature-icon">⌕</div><h3>Organization lookup</h3><p>Use the configured program's organization search service instead of guessing provider IDs.</p></article>
+        <article class="feature-card"><span class="feature-number">04</span><div class="feature-icon">⇧</div><h3>Document uploads</h3><p>Validate supported file types and upload original document bytes to provider-issued signed URLs.</p></article>
+        <article class="feature-card"><span class="feature-number">05</span><div class="feature-icon">◷</div><h3>Status and recovery</h3><p>Polling, bounded retries, recoverable input corrections and explicit handling of uncertain writes.</p></article>
+        <article class="feature-card"><span class="feature-number">06</span><div class="feature-icon">▤</div><h3>Auditable job queue</h3><p>Inspect job state, event timelines, operator actions and local workflow history.</p></article>
+      </div>
+    </section>
+
+    <section id="demo" class="section demo-section">
+      <div class="section-heading">
+        <div class="eyebrow">SEE THE WORKBENCH</div>
+        <h2>A clear view of every job.</h2>
+        <p>The preview uses fictional records. It does not perform verification or represent real eligibility evidence.</p>
+      </div>
+      <div class="demo-grid">
+        <div class="preview-frame"><img src="./assets/workbench.svg" alt="SheerFlow dashboard preview with fictional job statuses"></div>
+        <div class="video-frame">
+          <video controls preload="metadata" poster="./assets/workbench.svg">
+            <source src="./demo/sheerflow-demo.mp4" type="video/mp4">
+            Your browser does not support embedded video. <a href="./demo/sheerflow-demo.mp4">Open the demo video</a>.
+          </video>
+          <div class="video-caption"><span class="video-dot"></span> Product walkthrough · Fictional demo data</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quick-start" class="section quick-section">
+      <div class="section-heading">
+        <div class="eyebrow">GET STARTED</div>
+        <h2>Run SheerFlow on your machine.</h2>
+        <p>Start with the offline demo. Connect your own authorized SheerID API application only when you have program access.</p>
+      </div>
+      <div class="start-grid">
+        <div class="steps">
+          <div class="step"><span>1</span><div><h3>Clone the repository</h3><pre><code>git clone https://github.com/voyager67/Sheerid-Workflow-Studio.git
+cd Sheerid-Workflow-Studio</code></pre></div></div>
+          <div class="step"><span>2</span><div><h3>Install dependencies</h3><pre><code>npm ci</code></pre><p>Requires Node.js 22.15 or newer.</p></div></div>
+          <div class="step"><span>3</span><div><h3>Configure local demo mode</h3><pre><code>cp .env.example .env</code></pre><p>Set <code>SHEERFLOW_MODE=demo</code> and choose a unique dashboard password of at least 20 characters in your local <code>.env</code>.</p></div></div>
+          <div class="step"><span>4</span><div><h3>Start the workbench</h3><pre><code>npm start</code></pre><p>Open <code>http://127.0.0.1:8787</code> in your browser.</p></div></div>
+        </div>
+        <aside class="live-card">
+          <div class="live-pill"><span></span> FOR AUTHORIZED OPERATORS</div>
+          <h3>Connect your own API application</h3>
+          <p>Live mode requires a published SheerID program and credentials provisioned for your organization. SheerFlow does not supply or share API keys.</p>
+          <ul><li>Obtain API Access in MySheerID.</li><li>Create an authorized Client Application.</li><li>Set your own Client ID, Client Secret and Program ID in <code>.env</code>.</li><li>Validate with provider Test Mode before production use.</li></ul>
+          <a class="text-link" href="https://github.com/voyager67/Sheerid-Workflow-Studio/blob/main/README.md#get-your-own-sheerid-api-access">Read the complete setup guide ↗</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="bottom-cta">
+      <div><div class="eyebrow">OPEN SOURCE · APACHE 2.0</div><h2>Build on a workflow you can inspect.</h2><p>Read the code, run the demo, report issues and contribute improvements.</p></div>
+      <a class="button primary" href="https://github.com/voyager67/Sheerid-Workflow-Studio">View SheerFlow on GitHub ↗</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand" href="./"><span class="brand-icon">S</span><span>Sheer<span class="accent">Flow</span></span></a>
+    <p>Independent open-source integration workbench. Not affiliated with or endorsed by SheerID, Inc.</p>
+    <div><a href="https://github.com/voyager67/Sheerid-Workflow-Studio/blob/main/LICENSE">Apache 2.0</a><a href="https://github.com/voyager67/Sheerid-Workflow-Studio/blob/main/SECURITY.md">Security</a><a href="https://github.com/voyager67/Sheerid-Workflow-Studio/blob/main/CONTRIBUTING.md">Contributing</a></div>
+  </footer>
+</body>
+</html>
