@@ -15,7 +15,7 @@ The token is cached in memory and refreshed before its expiry. A status GET rece
 
 ## Create and submit
 
-1. `POST https://services.sheerid.com/rest/v2/verification` with { "programId": "..." }`.
+1. `POST https://services.sheerid.com/rest/v2/verification` with `{"programId":"..."}`.
 2. Validate the returned 24-character `verificationId`, `currentStep`, `errorIds`, and provider `submissionUrl`.
 3. If the provider requests a supported `collect...PersonalInfo` step, POST the operator-supplied segment payload to the exact returned URL after validating its origin and verification ID.
 

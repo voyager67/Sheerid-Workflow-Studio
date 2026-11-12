@@ -29,3 +29,11 @@ test('dashboard exposes the verification, organization search, document and corr
     assert.ok(html.includes(`id="${id}"`), `Missing dashboard control: ${id}`);
   }
 });
+
+
+test('static dashboard examples are clearly fictional and do not contain a real organization ID', () => {
+  assert.match(html, /alex\.morgan@example\.test/);
+  assert.match(html, /"id": 0/);
+  assert.match(html, /Example Technical Institute \(fictional demo\)/);
+  assert.doesNotMatch(html, /"id": 4597/);
+});
