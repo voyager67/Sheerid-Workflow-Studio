@@ -39,11 +39,11 @@ jobs:
           node-version: 22
 
       - name: Build the Pages site
-        run: node scripts/build-pages.mjs "$RUNNER_TEMP/sheerflow-pages"
+        run: node scripts/build-pages.mjs _site
 
       - name: Verify deployed entry point and media
         run: |
-          test -s "$RUNNER_TEMP/sheerflow-pages/index.html"
+          test -s "_site/index.html"
           test -s "$RUNNER_TEMP/sheerflow-pages/404.html"
           test -s "$RUNNER_TEMP/sheerflow-pages/styles.css"
           test -s "$RUNNER_TEMP/sheerflow-pages/assets/sheerflow-banner.svg"
@@ -56,7 +56,7 @@ jobs:
       - name: Upload the static website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "$RUNNER_TEMP/sheerflow-pages"
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
