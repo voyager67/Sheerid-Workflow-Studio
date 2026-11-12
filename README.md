@@ -18,6 +18,8 @@ SheerFlow is an independent JavaScript workbench for authorized SheerID REST API
 
 [Watch the short dashboard demo](assets/demo/sheerflow-demo.mp4) · [Official SheerID developer documentation](https://developer.sheerid.com/)
 
+Raster compatibility previews are also provided at `assets/brand/sheerflow-banner.png` and `assets/demo/workbench.png`. The editable SVG files are the source artwork; the PNGs are rendered from those SVGs for tools that prefer raster images. The fictional `assets/demo/sample-support.png` fixture is marked **SAMPLE RECORD / FICTIONAL / DEMO ONLY** and must never be used as real eligibility evidence.
+
 ## What it includes
 
 - **OAuth 2.0 Client Credentials:** server-side token acquisition, caching and refresh. Client secrets and bearer tokens never enter browser JavaScript.
