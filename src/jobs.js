@@ -42,8 +42,9 @@ function publicJob(job) {
     canResubmit: job.status === 'input_required',
     canUploadDocument: job.status === 'needs_document' && Boolean(job.submissionUrl),
     canRefresh: Boolean(job.verificationId) && ['waiting', 'action_required', 'unknown', 'needs_document', 'stopped'].includes(job.status),
-    canCancel: !TERMINAL.has(job.status) && job.status !== 'stopped',
-    canClear: TERMINAL.has(job.status) || (job.status === 'unknown' && !job.verificationId) || (job.status === 'stopped' && !job.verificationId),
+    canCancel: !TERMINAL.has(job.status) && job.status !== 'stopped'
+      && !(['unknown', 'stopped'].includes(job.status) && !job.verificationId),
+    canClear: TERMINAL.has(job.status),
   };
 }
 
@@ -104,10 +105,14 @@ export class JobManager {
   cancel(id) {
     const job = this.#mustGet(id);
     if (TERMINAL.has(job.status)) return publicJob(job);
+    if (['unknown', 'stopped'].includes(job.status) && !job.verificationId) {
+      throw new SheerFlowError('JOB_OUTCOME_UNKNOWN', 'The provider may have created a verification, but no ID was received. Reconcile the request before cancelling or retrying it.');
+    }
     this.#clearTimer(id);
     if (job.status === 'queued') {
       this.#queue = this.#queue.filter(item => item !== id);
-      this.#set(job, 'cancelled', 'Queued job cancelled.');
+      job.subjectData = null;
+      this.#set(job, 'cancelled', 'Queued job cancelled. Submitted subject data was cleared from memory.');
     } else if (job.controller) {
       job.controller.abort();
       job.message = 'Cancellation requested. A remote operation may still be completing.';
@@ -125,7 +130,7 @@ export class JobManager {
 
   delete(id) {
     const job = this.#mustGet(id);
-    const clearable = TERMINAL.has(job.status) || (['unknown', 'stopped'].includes(job.status) && !job.verificationId);
+    const clearable = TERMINAL.has(job.status);
     if (!clearable || job.controller || job.active) {
       throw new SheerFlowError('JOB_NOT_CLEARABLE', 'Only completed or locally cancelled jobs can be removed from history.');
     }

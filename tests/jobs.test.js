@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JobManager } from '../src/jobs.js';
+import { SheerFlowError } from '../src/auth.js';
 
 const verificationId = '0123456789abcdef01234567';
 const programId = 'fedcba9876543210fedcba98';
@@ -205,4 +206,29 @@ test('closing the manager stops local polling without claiming to cancel the pro
   jobs.close();
   assert.equal(jobs.get(created.id).status, 'stopped');
   assert.equal(jobs.get(created.id).canRefresh, true);
+});
+
+
+test('uncertain verification creation cannot be cancelled or cleared as though it were safe to retry', async t => {
+  let createCalls = 0;
+  const fake = {
+    async createVerification() {
+      createCalls += 1;
+      throw new SheerFlowError('API_WRITE_UNCERTAIN', 'Remote outcome unknown.', { uncertain:true });
+    }
+  };
+  const jobs = manager(fake);
+  t.after(() => jobs.close());
+  const requestId = uuid('8');
+  const created = jobs.create({ subjectData:subject, consent:true, clientRequestId:requestId });
+  const unknown = await waitFor(jobs, created.id, job => job.status === 'unknown');
+  assert.equal(unknown.verificationId, null);
+  assert.equal(unknown.canCancel, false);
+  assert.equal(unknown.canClear, false);
+  assert.throws(() => jobs.cancel(created.id), error => error.code === 'JOB_OUTCOME_UNKNOWN');
+  assert.throws(() => jobs.delete(created.id), error => error.code === 'JOB_NOT_CLEARABLE');
+  const duplicate = jobs.create({ subjectData:subject, consent:true, clientRequestId:requestId });
+  assert.equal(duplicate.id, created.id);
+  assert.equal(duplicate.status, 'unknown');
+  assert.equal(createCalls, 1);
 });

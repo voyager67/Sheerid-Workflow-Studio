@@ -59,12 +59,18 @@ async function readBody(request, limit) {
   if (declared > limit) throw new SheerFlowError('BODY_TOO_LARGE', 'Request exceeds the configured size limit.');
   const chunks = [];
   let size = 0;
-  for await (const chunk of request) {
-    size += chunk.length;
-    if (size > limit) throw new SheerFlowError('BODY_TOO_LARGE', 'Request exceeds the configured size limit.');
-    chunks.push(chunk);
+  try {
+    for await (const chunk of request) {
+      size += chunk.length;
+      if (size > limit) throw new SheerFlowError('BODY_TOO_LARGE', 'Request exceeds the configured size limit.');
+      chunks.push(chunk);
+    }
+    const combined = Buffer.concat(chunks, size);
+    return combined;
+  } finally {
+    // Release request-chunk buffers on success, oversize requests, and aborted uploads.
+    for (const chunk of chunks) chunk.fill(0);
   }
-  return Buffer.concat(chunks, size);
 }
 
 function parseJson(text, label) {
