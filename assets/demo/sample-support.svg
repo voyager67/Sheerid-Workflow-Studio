@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="140" viewBox="0 0 220 140" role="img" aria-labelledby="title desc">
+<title id="title">Fictional SheerFlow sample support record</title>
+<desc id="desc">A demo-only sample record with no real identity information.</desc>
+<rect width="220" height="140" fill="#f4f8fb"/>
+<rect width="220" height="31" fill="#174d65"/>
+<text x="12" y="20" fill="#ffffff" font-family="Arial, sans-serif" font-size="10" font-weight="700" letter-spacing=".35">SAMPLE RECORD</text>
+<text x="12" y="65" fill="#285b75" font-family="Arial, sans-serif" font-size="10">FICTIONAL</text>
+<text x="12" y="87" fill="#285b75" font-family="Arial, sans-serif" font-size="10">DEMO ONLY</text>
+</svg>
