@@ -6,7 +6,7 @@ SheerFlow is intended for authorized integrations with a SheerID program and API
 
 ## Reporting a vulnerability
 
-Do not open a public issue containing exploitable details, real verification IDs, access tokens, secrets, personal information, document bytes, or signed upload URLs. Contact the repository maintainer privately through GitHub's security advisory feature after the repository is published.
+Do not open a public issue containing exploitable details, real verification IDs, access tokens, secrets, personal information, document bytes, or signed upload URLs. Use GitHub's private vulnerability reporting or a private Security Advisory for this repository when that feature is enabled. Do not publish sensitive reports in issues, discussions, pull requests, or screenshots.
 
 ## Local secrets and data
 

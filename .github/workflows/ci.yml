@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Node.js ${{ matrix.node }}
@@ -18,12 +22,13 @@ jobs:
         node: [22, 24]
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ matrix.node }}
-      - name: Run tests
-        run: npm test
-      - name: Run project checks
-        run: npm run check
+          package-manager-cache: false
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Run tests and project checks
+        run: npm run verify

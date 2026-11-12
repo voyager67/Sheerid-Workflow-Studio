@@ -14,7 +14,7 @@ const assets = new Map([
   ['/', ['public/index.html', 'text/html; charset=utf-8']],
   ['/app.js', ['public/app.js', 'text/javascript; charset=utf-8']],
   ['/styles.css', ['public/styles.css', 'text/css; charset=utf-8']],
-  ['/brand.png', ['assets/brand/sheerflow-banner.png', 'image/png']],
+  ['/brand.svg', ['assets/brand/sheerflow-banner.svg', 'image/svg+xml']],
 ]);
 
 function readConfig(env) {
@@ -53,7 +53,9 @@ function safeEqual(a, b) {
 }
 
 async function readBody(request, limit) {
-  const declared = Number(request.headers['content-length'] || 0);
+  const rawLength = request.headers['content-length'];
+  const declared = rawLength === undefined ? 0 : Number(rawLength);
+  if (!Number.isSafeInteger(declared) || declared < 0) throw new SheerFlowError('CONTENT_LENGTH_INVALID', 'Request content length is invalid.');
   if (declared > limit) throw new SheerFlowError('BODY_TOO_LARGE', 'Request exceeds the configured size limit.');
   const chunks = [];
   let size = 0;
@@ -104,14 +106,14 @@ export function createSheerFlowServer({ env = process.env, client: injectedClien
   const server = createServer((request, response) => {
     void handle(request, response).catch(error => {
       if (response.headersSent) { response.destroy(); return; }
-      const status = error.code === 'JOB_NOT_FOUND' ? 404
+      const status = ['JOB_NOT_FOUND', 'NOT_FOUND'].includes(error.code) ? 404
         : ['QUEUE_FULL', 'JOB_NOT_READY_FOR_DOCUMENT', 'JOB_NOT_CLEARABLE', 'IDEMPOTENCY_CONFLICT'].includes(error.code) ? 409
           : error.code === 'UNAUTHORIZED' ? 401
             : error.code === 'LOGIN_RATE_LIMIT' || error.status === 429 ? 429
               : ['ORIGIN_REJECTED', 'HOST_REJECTED', 'CSRF_REJECTED'].includes(error.code) ? 403
               : ['BODY_TOO_LARGE', 'DOCUMENT_SIZE_INVALID'].includes(error.code) ? 413
               : error instanceof SheerFlowError ? 400 : 500;
-      sendJson(response, status, { error: { code: error.code || 'INTERNAL_ERROR', message: error.message || 'Request failed.' } });
+      sendJson(response, status, { error: { code: error.code || 'INTERNAL_ERROR', message: error instanceof SheerFlowError ? error.message : 'An unexpected server error occurred.' } });
     });
   });
   server.requestTimeout = 120_000;
@@ -174,13 +176,15 @@ export function createSheerFlowServer({ env = process.env, client: injectedClien
       loginFailures.delete(ip);
       const id = randomBytes(32).toString('hex');
       const csrf = randomBytes(32).toString('hex');
+      // Keep the in-memory session store bounded even when a local user repeatedly signs in.
+      if (sessions.size >= 32) sessions.delete(sessions.keys().next().value);
       sessions.set(id, { csrf, expiresAt: now + 8 * 60 * 60 * 1000 });
       response.setHeader('set-cookie', sessionCookie(id));
       sendJson(response, 200, { csrfToken: csrf });
       return;
     }
     if (request.method === 'POST' && url.pathname === '/api/logout') {
-      const session = authorizeSession(request, true);
+      authorizeSession(request, true);
       const cookie = (request.headers.cookie || '').split(';').map(x => x.trim()).find(x => x.startsWith('sheerflow_session='))?.slice('sheerflow_session='.length);
       if (cookie) sessions.delete(cookie);
       response.setHeader('set-cookie', 'sheerflow_session=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0');
@@ -251,7 +255,10 @@ export function createSheerFlowServer({ env = process.env, client: injectedClien
         let totalBytes = 0;
         for (const file of values) {
           if (!['application/pdf', 'image/png', 'image/jpeg'].includes(file.type)) throw new SheerFlowError('DOCUMENT_TYPE_INVALID', 'Only PDF, PNG and JPEG documents are accepted.');
-          const bytes = Buffer.from(await file.arrayBuffer());
+          const arrayBuffer = await file.arrayBuffer();
+          // Buffer.from(ArrayBuffer) aliases the same memory; copy the bytes before clearing it.
+          const bytes = Buffer.from(new Uint8Array(arrayBuffer));
+          new Uint8Array(arrayBuffer).fill(0);
           totalBytes += bytes.length;
           files.push({ bytes, fileName:file.name });
           if (totalBytes > config.maxDocumentBytes) throw new SheerFlowError('DOCUMENT_BATCH_TOO_LARGE', 'Combined documents exceed the configured upload limit.');

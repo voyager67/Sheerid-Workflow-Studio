@@ -62,7 +62,8 @@ export class OAuthTokenManager {
     if (!response.ok) {
       throw new SheerFlowError('OAUTH_REJECTED', 'SheerID rejected the OAuth credentials. Verify the application ID, secret and API role.', { status: response.status });
     }
-    if (typeof data?.access_token !== 'string' || data.token_type?.toLowerCase() !== 'bearer'
+    if (typeof data?.access_token !== 'string' || data.access_token.length < 16
+      || typeof data.token_type !== 'string' || data.token_type.toLowerCase() !== 'bearer'
       || !Number.isFinite(data.expires_in) || data.expires_in < 60) {
       throw new SheerFlowError('OAUTH_RESPONSE_INVALID', 'SheerID OAuth returned an invalid token response.');
     }

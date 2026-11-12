@@ -2,7 +2,7 @@ import { randomUUID, createHmac, randomBytes } from 'node:crypto';
 import { SheerFlowError } from './auth.js';
 import { inspectDocument } from './documents.js';
 
-const TERMINAL = new Set(['approved', 'rejected', 'failed', 'cancelled', 'unknown']);
+const TERMINAL = new Set(['approved', 'rejected', 'failed', 'cancelled']);
 const STEP_COLLECT = /^collect[A-Za-z0-9]+PersonalInfo$/;
 const TRANSIENT_SUBJECT_ERRORS = new Set(['sourcesUnavailable', 'dataProviderError', 'dataNotAvailable']);
 
@@ -41,7 +41,9 @@ function publicJob(job) {
     rewardData: job.rewardData || null,
     canResubmit: job.status === 'input_required',
     canUploadDocument: job.status === 'needs_document' && Boolean(job.submissionUrl),
-    canRefresh: Boolean(job.verificationId) && ['waiting', 'action_required', 'unknown', 'needs_document'].includes(job.status),
+    canRefresh: Boolean(job.verificationId) && ['waiting', 'action_required', 'unknown', 'needs_document', 'stopped'].includes(job.status),
+    canCancel: !TERMINAL.has(job.status) && job.status !== 'stopped',
+    canClear: TERMINAL.has(job.status) || (job.status === 'unknown' && !job.verificationId) || (job.status === 'stopped' && !job.verificationId),
   };
 }
 
@@ -111,15 +113,20 @@ export class JobManager {
       job.message = 'Cancellation requested. A remote operation may still be completing.';
       this.#touch(job);
       this.#event(job, 'cancel_requested', job.message);
+    } else if (job.verificationId) {
+      this.#set(job, 'stopped', 'Local polling stopped. The provider verification remains active; use Refresh to check its current state.');
+    } else if (job.status === 'unknown') {
+      this.#set(job, 'stopped', 'Local tracking stopped. The provider may have received the start request; reconcile before retrying.');
     } else {
-      this.#set(job, 'cancelled', 'Job cancelled.');
+      this.#set(job, 'cancelled', 'Job cancelled before a provider verification was created.');
     }
     return publicJob(job);
   }
 
   delete(id) {
     const job = this.#mustGet(id);
-    if (!['approved', 'rejected', 'failed', 'cancelled'].includes(job.status) || job.controller || job.active) {
+    const clearable = TERMINAL.has(job.status) || (['unknown', 'stopped'].includes(job.status) && !job.verificationId);
+    if (!clearable || job.controller || job.active) {
       throw new SheerFlowError('JOB_NOT_CLEARABLE', 'Only completed or locally cancelled jobs can be removed from history.');
     }
     this.#clearTimer(id);
@@ -218,7 +225,7 @@ export class JobManager {
   async refresh(id) {
     const job = this.#mustGet(id);
     if (!job.verificationId) throw new SheerFlowError('VERIFICATION_ID_UNAVAILABLE', 'The start request did not return a verification ID; do not create a duplicate automatically. Reconcile this request with your SheerID account administrator.');
-    if (!['waiting', 'action_required', 'unknown', 'needs_document'].includes(job.status)) return publicJob(job);
+    if (!['waiting', 'action_required', 'unknown', 'needs_document', 'stopped'].includes(job.status)) return publicJob(job);
     this.#clearTimer(id);
     try {
       const current = await this.client.getStatus(job.verificationId, job.statusUrl);
@@ -378,7 +385,9 @@ export class JobManager {
     this.#timers.clear();
     for (const job of this.#jobs.values()) {
       if (job.controller) job.controller.abort();
-      if (!TERMINAL.has(job.status)) this.#set(job, 'cancelled', 'Application stopped; live status can be refreshed after restart.');
+      if (!TERMINAL.has(job.status)) this.#set(job, (job.verificationId || job.status === 'unknown') ? 'stopped' : 'cancelled', (job.verificationId || job.status === 'unknown')
+        ? 'Application stopped; the provider verification may still be active. Refresh its status after restarting.'
+        : 'Application stopped before a provider verification was created.');
       job.subjectData = null;
     }
   }
