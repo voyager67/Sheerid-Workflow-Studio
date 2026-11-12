@@ -1,11 +1,33 @@
 node_modules/
+
+# Local credentials and configuration
 .env
 .env.*
 !.env.example
+.npmrc
+.npmrc.*
+!.npmrc.example
+
+# Local secrets, certificates and keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.jks
+*.keystore
+
+# Local data and runtime output
 .DS_Store
 Thumbs.db
 *.log
+*.dump
+*.sqlite
+*.sqlite3
+*.db
 .runs/
 coverage/
 dist/
 playwright-report/
+uploads/
+storage/

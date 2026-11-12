@@ -20,10 +20,11 @@ QUEUED
       ├─ WAITING        provider currentStep = pending; status is polled
       ├─ ACTION_REQUIRED emailLoop / sso / another provider-directed step
       ├─ UNKNOWN        write outcome could not be confirmed; no automatic replay
+      ├─ STOPPED        local tracking stopped; provider verification may remain active
       └─ FAILED         local or provider API error
 ```
 
-The queue creates a provider verification only once per local request ID during the process lifetime. Creation and submission requests are non-idempotent. If a write's response is lost, SheerFlow records an uncertain outcome and does not replay the write. The operator must reconcile it before attempting another verification.
+The queue creates a provider verification only once per local request ID during the process lifetime. Creation and submission requests are non-idempotent. If a write's response is lost, SheerFlow records an uncertain outcome and does not replay the write. The operator must reconcile it before attempting another verification. Stopping local tracking is not a provider cancellation: a known verification ID remains refreshable, while an uncertain creation with no returned ID must be reconciled before a new attempt.
 
 ## Data lifecycle
 

@@ -42,6 +42,7 @@ The implementation does not edit, generate, enhance, or fabricate document conte
 - Recoverable personal-information errors leave the same `verificationId` on its existing collect step and can be corrected/resubmitted. `sourcesUnavailable`, `dataProviderError`, and `dataNotAvailable` are retried twice with bounded backoff on that same step.
 - Retry a 429 only when SheerID explicitly returns `apiRateLimitExceeded`; use bounded exponential backoff. Safe status GETs may retry transient 5xx responses. Program/person limits are terminal. A write that times out without a definitive response is marked unknown and is not replayed.
 - Non-idempotent POST and signed-upload writes are never automatically replayed after an ambiguous outcome.
+- **Stop local tracking** only stops this application's polling or queued work. It does not cancel a verification already created at SheerID. Jobs with a known provider ID can be refreshed later; a job whose create request has an unknown outcome must be reconciled with the program operator before another verification is started.
 
 ## Test Mode
 

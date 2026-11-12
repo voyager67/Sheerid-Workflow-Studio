@@ -1,7 +1,7 @@
 {
   "name": "sheerid-workflow-studio",
   "version": "1.0.0",
-  "private": false,
+  "private": true,
   "description": "An authorized SheerID REST API workflow studio for verification orchestration, document review, and status tracking.",
   "type": "module",
   "engines": {

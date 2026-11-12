@@ -39,13 +39,16 @@ function assertStatusUrl(value, verificationId, baseUrl = OFFICIAL_BASE) {
   return `verification/${verificationId}`;
 }
 
-export function validateVerificationResponse(body) {
+export function validateVerificationResponse(body, expectedVerificationId) {
   if (!body || typeof body !== 'object' || Array.isArray(body)
     || typeof body.verificationId !== 'string' || !ID_PATTERN.test(body.verificationId)
     || typeof body.currentStep !== 'string' || !/^[A-Za-z][A-Za-z0-9]{0,63}$/.test(body.currentStep)
     || (body.errorIds !== undefined && (!Array.isArray(body.errorIds)
       || body.errorIds.length > 50 || !body.errorIds.every(x => typeof x === 'string' && x.length <= 100)))) {
     throw new SheerFlowError('API_RESPONSE_INVALID', 'SheerID returned an invalid verification response.');
+  }
+  if (expectedVerificationId !== undefined && body.verificationId !== expectedVerificationId) {
+    throw new SheerFlowError('VERIFICATION_ID_MISMATCH', 'SheerID returned a response for a different verification.');
   }
   return body;
 }
@@ -129,13 +132,13 @@ export class SheerIDClient {
       'collectStudentPersonalInfo', 'collectTeacherPersonalInfo', 'collectMilitaryPersonalInfo',
       'collectFirstResponderPersonalInfo', 'collectSeniorPersonalInfo', 'collectPersonalInfo',
     ], this.baseUrl);
-    return validateVerificationResponse(await this.#request('POST', url.slice(this.baseUrl.length), JSON.stringify(subjectData), { signal }));
+    return validateVerificationResponse(await this.#request('POST', url.slice(this.baseUrl.length), JSON.stringify(subjectData), { signal }), verificationId);
   }
 
   async getStatus(verificationId, statusUrl, signal) {
     if (!ID_PATTERN.test(verificationId)) throw new SheerFlowError('INVALID_VERIFICATION_ID', 'Verification ID is invalid.');
     const path = statusUrl ? assertStatusUrl(statusUrl, verificationId, this.baseUrl) : `verification/${verificationId}`;
-    return validateVerificationResponse(await this.#request('GET', path, undefined, { signal }));
+    return validateVerificationResponse(await this.#request('GET', path, undefined, { signal }), verificationId);
   }
 
   async getDetails(verificationId, signal) {
@@ -160,7 +163,7 @@ export class SheerIDClient {
     const rawSearchUrl = theme?.config?.orgSearchUrl;
     let url;
     try { url = new URL(rawSearchUrl); } catch { throw new SheerFlowError('ORGANIZATION_SEARCH_UNAVAILABLE', 'This program does not provide a valid organization search URL.'); }
-    if (url.origin !== 'https://orgsearch.sheerid.net' || !url.pathname.startsWith('/rest/organization/search')
+    if (url.origin !== 'https://orgsearch.sheerid.net' || url.pathname !== '/rest/organization/search'
       || url.username || url.password || url.hash) {
       throw new SheerFlowError('ORGANIZATION_SEARCH_URL_REJECTED', 'The program organization-search destination did not pass validation.');
     }
@@ -193,19 +196,30 @@ export class SheerIDClient {
   }
 
   async uploadToSignedUrl(uploadUrl, bytes, mimeType, signal) {
+    if (typeof uploadUrl !== 'string' || uploadUrl.length > 8192) {
+      throw new SheerFlowError('INVALID_UPLOAD_URL', 'SheerID returned an invalid signed upload URL.');
+    }
     let url;
     try { url = new URL(uploadUrl); } catch { throw new SheerFlowError('INVALID_UPLOAD_URL', 'SheerID returned an invalid signed upload URL.'); }
-    const host = url.hostname.toLowerCase();
+    const host = url.hostname.toLowerCase().replace(/\\.$/, '');
     const unsafeHost = isIP(host) !== 0 || host === 'localhost' || host.endsWith('.localhost')
-      || host.endsWith('.local') || /^10\./.test(host) || /^192\.168\./.test(host)
-      || /^172\.(1[6-9]|2\d|3[01])\./.test(host);
+      || host.endsWith('.local') || host.endsWith('.internal') || host.endsWith('.test')
+      || host.endsWith('.invalid') || host.endsWith('.home') || host.endsWith('.lan')
+      || host.endsWith('.corp') || host.endsWith('.onion') || host === 'metadata.google.internal'
+      || /^10\./.test(host) || /^192\.168\./.test(host)
+      || /^169\.254\./.test(host) || /^172\.(1[6-9]|2\d|3[01])\./.test(host);
     if (url.protocol !== 'https:' || url.username || url.password || url.hash || unsafeHost) {
       throw new SheerFlowError('INVALID_UPLOAD_URL', 'The signed upload URL did not pass destination checks.');
     }
+    if (!Buffer.isBuffer(bytes) || bytes.length === 0 || !['application/pdf', 'image/png', 'image/jpeg'].includes(mimeType)) {
+      throw new SheerFlowError('DOCUMENT_PAYLOAD_INVALID', 'Document bytes and MIME type are invalid.');
+    }
     try {
-      const response = await this.fetch(url, {
+      // The provider signature covers the full URL. Send the original string exactly as returned.
+      const response = await this.fetch(uploadUrl, {
         method: 'PUT', headers: { 'content-type': mimeType, 'content-length': String(bytes.length) },
-        body: bytes, redirect: 'error', signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(this.timeoutMs)]) : AbortSignal.timeout(this.timeoutMs),
+        body: bytes, redirect: 'error',
+        signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(this.timeoutMs)]) : AbortSignal.timeout(this.timeoutMs),
       });
       if (response.status !== 200) throw new SheerFlowError('DOCUMENT_PUT_FAILED', `Document storage returned HTTP ${response.status}.`);
     } catch (error) {
@@ -216,7 +230,7 @@ export class SheerIDClient {
 
   async completeDocumentUpload(verificationId, submissionUrl, signal) {
     const url = assertProviderStepUrl(submissionUrl, verificationId, ['completeDocUpload'], this.baseUrl);
-    return validateVerificationResponse(await this.#request('POST', url.slice(this.baseUrl.length), '', { signal }));
+    return validateVerificationResponse(await this.#request('POST', url.slice(this.baseUrl.length), '', { signal }), verificationId);
   }
 }
 

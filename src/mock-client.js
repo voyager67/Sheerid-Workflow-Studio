@@ -35,7 +35,7 @@ export class MockSheerIDClient {
 
   async searchOrganizations(_programId, query) {
     const term = String(query || '').toLowerCase();
-    return [{ id:4597, name:'Example Technical Institute', country:'US', type:'UNIVERSITY' }]
+    return [{ id:0, name:'Example Technical Institute (fictional demo)', country:'ZZ', type:'DEMO' }]
       .filter(organization => organization.name.toLowerCase().includes(term) || term.includes('example'));
   }
 

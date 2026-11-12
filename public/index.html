@@ -41,8 +41,10 @@
           <h1>Verification <span class="accent">Workbench</span></h1>
           <p class="muted">Create and manage authorized verification workflows using your own published program and API application.</p>
         </div>
-        <div class="hero-actions"><button id="refresh-all" class="btn ghost">↻ Refresh queue</button><button id="logout" class="btn subtle">Sign out</button></div>
+        <div class="hero-actions"><button id="refresh-all" class="btn ghost">↻ Refresh provider statuses</button><button id="logout" class="btn subtle">Sign out</button></div>
       </section>
+
+      <div id="app-notice" class="notice" role="status" aria-live="polite" hidden></div>
 
       <section class="metrics">
         <article class="metric panel"><span>All jobs</span><strong id="metric-total">0</strong><small>In local session</small></article>
@@ -56,6 +58,15 @@
           <div class="section-head"><div><div class="eyebrow">NEW WORKFLOW</div><h2>Create verification</h2></div><span class="step-number">01</span></div>
           <p class="muted small">Supply the exact subject fields required by your authorized program. Use accurate information and obtain consent.</p>
           <form id="create-form" class="stack">
+            <div class="org-lookup">
+              <label for="organization-query">Find an organization in this program</label>
+              <div class="inline-form">
+                <input id="organization-query" type="search" maxlength="80" placeholder="Search by organization name" autocomplete="off">
+                <button id="organization-search-button" class="btn ghost" type="button">Search</button>
+              </div>
+              <p class="muted tiny">Search results come from your configured SheerID program. Select a result to insert its provider-issued ID into the JSON payload.</p>
+              <div id="organization-results" class="org-results" aria-live="polite"></div>
+            </div>
             <label for="subject-json">Subject payload <span class="hint">JSON</span></label>
             <textarea id="subject-json" rows="10" spellcheck="false" required>{
   "firstName": "Alex",
@@ -67,6 +78,7 @@
     "name": "Example Technical Institute"
   }
 }</textarea>
+            <p class="muted tiny">The demo uses fictional example values. In live mode, replace every field with accurate, authorized information and a real organization selected from your program's search results.</p>
             <div id="demo-options" hidden>
               <label for="demo-scenario">Demo scenario</label>
               <select id="demo-scenario">
@@ -91,7 +103,22 @@
 
       <section id="detail-panel" class="panel detail-panel" hidden>
         <div class="section-head"><div><div class="eyebrow">WORKFLOW INSPECTOR</div><h2 id="detail-title">Verification details</h2></div><button id="close-detail" class="icon-btn" aria-label="Close details">×</button></div>
+        <div id="detail-actions" class="detail-actions">
+          <button id="detail-refresh" class="btn ghost" type="button" hidden>Refresh provider status</button>
+          <button id="detail-stop" class="btn subtle" type="button" hidden>Stop local tracking</button>
+          <button id="detail-clear" class="btn subtle" type="button" hidden>Remove local history</button>
+        </div>
         <div id="detail-summary" class="detail-summary"></div>
+        <div id="resubmit-action" class="resubmit-action" hidden>
+          <div><strong>Correct the information requested by the provider</strong><p class="muted small">This resubmits the same verification step. It does not create a new verification.</p></div>
+          <form id="resubmit-form" class="stack">
+            <label for="resubmit-json">Corrected subject payload <span class="hint">JSON</span></label>
+            <textarea id="resubmit-json" rows="8" spellcheck="false" required></textarea>
+            <label class="consent-line"><input id="resubmit-consent" type="checkbox" required><span>I confirm the corrected information is accurate and authorized.</span></label>
+            <button class="btn primary" type="submit">Resubmit this verification</button>
+          </form>
+          <p id="resubmit-error" class="form-error" role="alert"></p>
+        </div>
         <div id="document-action" class="document-action" hidden>
           <div><strong>Supporting document required</strong><p class="muted small">Select the authentic document requested by the provider. PDF, PNG and JPEG are accepted.</p></div>
           <form id="document-form" class="upload-form"><input id="document-files" type="file" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" multiple required><button class="btn primary" type="submit">Upload documents</button></form>

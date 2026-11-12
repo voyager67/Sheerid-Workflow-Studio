@@ -25,7 +25,7 @@ SheerFlow is an independent JavaScript workbench for authorized SheerID REST API
 - **Organization lookup:** use the configured program theme and provider search service; do not guess organization IDs.
 - **Document upload:** PDF, PNG and JPEG; up to five files per batch; signature, extension and size checks; provider-issued signed upload URLs; original file bytes are uploaded without alteration.
 - **Workflow states:** approved, rejected, pending, document-required, email/SSO action-required, recoverable input errors and uncertain write outcomes.
-- **Job orchestration:** bounded in-memory queue, configurable concurrency, duplicate-request protection, cancellation, refresh and history cleanup.
+- **Job orchestration:** bounded in-memory queue, configurable concurrency, duplicate-request protection, safe local tracking stop, provider status refresh and local history cleanup.
 - **Resilience:** bounded retries for safe reads and documented transient failures, Retry-After handling and protection against blindly replaying an uncertain write.
 - **Local dashboard and CLI:** job queue, workflow inspector, event timeline, upload controls, configuration diagnostics, status lookup and organization search.
 - **Privacy-minded defaults:** no persistent job database; subject fields are excluded from audit events; document bytes are held in memory for upload and cleared afterward.
@@ -93,6 +93,7 @@ See [API workflow notes](docs/API_WORKFLOW.md) and [architecture](docs/ARCHITECT
 - Subject data and document bytes are handled in memory for the workflow; they are not written to a job database. Audit events do not store subject fields or document contents.
 - File signature checks do not prove that a document is genuine.
 - A write with an ambiguous network outcome is not automatically replayed. Reconcile provider status before attempting another action.
+- Stopping a job stops local tracking; it does not cancel a verification already created at SheerID. Refresh jobs with a known provider ID, and reconcile an unknown creation outcome before retrying.
 - Read [SECURITY.md](SECURITY.md) before using the application with a live program.
 
 SheerFlow is a local operator workbench, not a multi-tenant hosted service. Do not deploy it as a public service or share one set of credentials among unrelated users.
