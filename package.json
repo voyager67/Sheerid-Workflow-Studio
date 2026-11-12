@@ -1,0 +1,30 @@
+{
+  "name": "sheerid-workflow-studio",
+  "version": "1.0.0",
+  "private": false,
+  "description": "An authorized SheerID REST API workflow studio for verification orchestration, document review, and status tracking.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.15"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "dev": "node --watch --env-file-if-exists=.env src/server.js",
+    "doctor": "node --env-file-if-exists=.env src/cli.js doctor",
+    "status": "node --env-file-if-exists=.env src/cli.js status",
+    "organizations": "node --env-file-if-exists=.env src/cli.js organizations",
+    "test": "node --test",
+    "check": "node scripts/check.mjs && node scripts/security-scan.mjs",
+    "verify": "npm test && npm run check"
+  },
+  "keywords": [
+    "sheerid",
+    "verification",
+    "workflow",
+    "oauth2",
+    "document-upload",
+    "nodejs",
+    "javascript"
+  ]
+}

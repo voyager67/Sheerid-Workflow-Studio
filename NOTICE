@@ -1,0 +1,10 @@
+SheerFlow — SheerID Workflow Studio
+
+This project is an independent third-party tool. It is not affiliated with,
+endorsed by, or supported by SheerID, Inc. “SheerID” is a trademark of its
+respective owner and is used only to identify the third-party API integration.
+
+The SheerID REST API, its documentation, service marks, provider interfaces,
+and any third-party SDKs remain the property of their respective owners and
+are subject to their own terms and licenses. This repository does not include
+SheerID's SDK or provider source code.

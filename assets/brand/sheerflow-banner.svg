@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 440" role="img" aria-labelledby="title desc">
+<title id="title">SheerFlow — Authorized Verification Workflow Studio</title><desc id="desc">A shield and verification workflow from OAuth to API submission, document upload and auditable status.</desc>
+<defs>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#06121f"/><stop offset=".55" stop-color="#0b2030"/><stop offset="1" stop-color="#07131f"/></linearGradient>
+ <linearGradient id="mint"><stop stop-color="#27cddd"/><stop offset="1" stop-color="#46eab1"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#14becb" stop-opacity=".28"/><stop offset="1" stop-color="#14becb" stop-opacity="0"/></radialGradient>
+ <filter id="soft"><feGaussianBlur stdDeviation="24"/></filter>
+</defs>
+<rect width="1400" height="440" rx="26" fill="url(#bg)"/>
+<ellipse cx="700" cy="170" rx="600" ry="250" fill="url(#glow)"/>
+<path d="M0 370 Q220 270 440 370 T880 370 T1400 350" fill="none" stroke="#1bcbd3" stroke-opacity=".18" stroke-width="2"/>
+<path d="M0 400 Q220 300 440 400 T880 400 T1400 380" fill="none" stroke="#35e5ae" stroke-opacity=".14" stroke-width="2"/>
+<g transform="translate(110 95)">
+ <path d="M65 0 123 23v58c0 42-27 70-58 88C34 151 7 123 7 81V23Z" fill="#0c3448" stroke="url(#mint)" stroke-width="5"/>
+ <path d="m36 82 20 20 42-48" fill="none" stroke="#4cebb4" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+ <text x="160" y="73" fill="#f1f8fc" font-size="76" font-weight="800" font-family="Inter,Arial,sans-serif">Sheer<tspan fill="#4ce6b4">Flow</tspan></text>
+ <text x="162" y="117" fill="#8daebf" font-size="17" letter-spacing="4" font-family="Inter,Arial,sans-serif">AUTHORIZED VERIFICATION WORKFLOW STUDIO</text>
+</g>
+<text x="700" y="250" text-anchor="middle" font-size="29" font-weight="700" fill="#eaf6fb" font-family="Inter,Arial,sans-serif">Orchestrate every step. Keep every decision auditable.</text>
+<g transform="translate(130 300)" font-family="Inter,Arial,sans-serif">
+ <g><rect width="225" height="88" rx="16" fill="#102c3d" stroke="#1b8090"/><text x="112" y="36" text-anchor="middle" fill="#41dfe1" font-size="17" font-weight="700">01 · OAUTH</text><text x="112" y="62" text-anchor="middle" fill="#c4dce8" font-size="14">Credential vault</text></g>
+ <path d="M240 44h48m-12-12 12 12-12 12" fill="none" stroke="url(#mint)" stroke-width="4" stroke-linecap="round"/>
+ <g transform="translate(305)"><rect width="225" height="88" rx="16" fill="#102c3d" stroke="#1b8090"/><text x="112" y="36" text-anchor="middle" fill="#41dfe1" font-size="17" font-weight="700">02 · API</text><text x="112" y="62" text-anchor="middle" fill="#c4dce8" font-size="14">Verification record</text></g>
+ <path d="M545 44h48m-12-12 12 12-12 12" fill="none" stroke="url(#mint)" stroke-width="4" stroke-linecap="round"/>
+ <g transform="translate(610)"><rect width="225" height="88" rx="16" fill="#102c3d" stroke="#1b8090"/><text x="112" y="36" text-anchor="middle" fill="#41dfe1" font-size="17" font-weight="700">03 · DOCUMENT</text><text x="112" y="62" text-anchor="middle" fill="#c4dce8" font-size="14">Provider-signed upload</text></g>
+ <path d="M850 44h48m-12-12 12 12-12 12" fill="none" stroke="url(#mint)" stroke-width="4" stroke-linecap="round"/>
+ <g transform="translate(915)"><rect width="225" height="88" rx="16" fill="#102c3d" stroke="#278c6b"/><text x="112" y="36" text-anchor="middle" fill="#4be9b0" font-size="17" font-weight="700">04 · AUDIT</text><text x="112" y="62" text-anchor="middle" fill="#c4dce8" font-size="14">Status and timeline</text></g>
+</g>
+</svg>

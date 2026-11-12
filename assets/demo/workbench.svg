@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" role="img" aria-labelledby="t">
+<title id="t">SheerFlow dashboard preview</title>
+<defs><linearGradient id="b" y2="1"><stop stop-color="#10273a"/><stop offset="1" stop-color="#091724"/></linearGradient><linearGradient id="g"><stop stop-color="#25cbd7"/><stop offset="1" stop-color="#45e5b1"/></linearGradient></defs>
+<rect width="1100" height="650" rx="24" fill="#07131f"/>
+<rect x="22" y="22" width="1056" height="606" rx="18" fill="url(#b)" stroke="#24485c"/>
+<path d="M22 80h1056" stroke="#24485c"/>
+<circle cx="50" cy="51" r="7" fill="#ed7278"/><circle cx="74" cy="51" r="7" fill="#edc16d"/><circle cx="98" cy="51" r="7" fill="#4bdfab"/>
+<text x="136" y="59" fill="#f0f7fa" font-family="Arial,sans-serif" font-size="20" font-weight="700">Sheer<tspan fill="#4ce5b3">Flow</tspan></text>
+<rect x="870" y="36" width="174" height="30" rx="15" fill="#103d35"/><text x="957" y="56" text-anchor="middle" fill="#65eabb" font-size="12" font-family="Arial">LOCAL DEMO</text>
+<text x="55" y="133" fill="#50dfe0" font-size="12" font-family="Arial" letter-spacing="3">SHEERID WORKFLOW STUDIO</text>
+<text x="55" y="179" fill="#eff8fb" font-size="37" font-family="Arial" font-weight="700">Verification <tspan fill="#4ce5b3">Workbench</tspan></text>
+<g font-family="Arial">
+ <g><rect x="55" y="207" width="228" height="90" rx="14" fill="#0a1d2c" stroke="#224a5f"/><text x="78" y="240" fill="#92aebe" font-size="13">ALL JOBS</text><text x="78" y="279" fill="#f0f8fb" font-weight="700" font-size="35">12</text></g>
+ <g transform="translate(305)"><rect x="0" y="207" width="228" height="90" rx="14" fill="#0a1d2c" stroke="#224a5f"/><text x="23" y="240" fill="#92aebe" font-size="13">IN PROGRESS</text><text x="23" y="279" fill="#f0f8fb" font-weight="700" font-size="35">04</text></g>
+ <g transform="translate(555)"><rect x="0" y="207" width="228" height="90" rx="14" fill="#0a1d2c" stroke="#224a5f"/><text x="23" y="240" fill="#92aebe" font-size="13">APPROVED</text><text x="23" y="279" fill="#4ce5b3" font-weight="700" font-size="35">06</text></g>
+ <g transform="translate(805)"><rect x="0" y="207" width="228" height="90" rx="14" fill="#0a1d2c" stroke="#224a5f"/><text x="23" y="240" fill="#92aebe" font-size="13">NEEDS ACTION</text><text x="23" y="279" fill="#e4bd77" font-weight="700" font-size="35">02</text></g>
+</g>
+<rect x="55" y="324" width="990" height="264" rx="16" fill="#091a28" stroke="#24475b"/>
+<text x="82" y="363" font-family="Arial" font-size="19" fill="#f0f7fa" font-weight="700">Verification queue</text>
+<text x="1000" y="363" font-family="Arial" font-size="12" fill="#7da0b2" text-anchor="end">12 jobs</text>
+<g font-family="Arial" font-size="14">
+ <g transform="translate(0 392)"><path d="M82 28h936" stroke="#1e3a4e"/><circle cx="100" cy="7" r="11" fill="#123b34"/><text x="100" y="12" text-anchor="middle" fill="#49e3ae">✓</text><text x="128" y="12" fill="#eaf5fa">Verification 8f21a9…</text><rect x="860" y="-8" width="128" height="28" rx="14" fill="#123b34"/><text x="924" y="11" text-anchor="middle" fill="#5ce7b7" font-size="12">APPROVED</text></g>
+ <g transform="translate(0 447)"><path d="M82 28h936" stroke="#1e3a4e"/><circle cx="100" cy="7" r="11" fill="#40341d"/><text x="100" y="12" text-anchor="middle" fill="#efc46e">◷</text><text x="128" y="12" fill="#eaf5fa">Verification 94ae10…</text><rect x="860" y="-8" width="128" height="28" rx="14" fill="#40341d"/><text x="924" y="11" text-anchor="middle" fill="#f2cc7b" font-size="12">PENDING</text></g>
+ <g transform="translate(0 502)"><circle cx="100" cy="7" r="11" fill="#352640"/><text x="100" y="12" text-anchor="middle" fill="#d6acf6">↑</text><text x="128" y="12" fill="#eaf5fa">Verification 26b0c4…</text><rect x="860" y="-8" width="128" height="28" rx="14" fill="#352640"/><text x="924" y="11" text-anchor="middle" fill="#d7b4f2" font-size="12">NEEDS ACTION</text></g>
+</g>
+<text x="55" y="614" fill="#7796a8" font-family="Arial" font-size="11">Illustrative interface preview · fictional records · no live identities</text>
+</svg>

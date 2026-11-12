@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="SheerFlow — Authorized SheerID verification workflow studio">
+  <title>SheerFlow — Verification Workbench</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="SheerFlow home">
+        <span class="brand-mark">✓</span><span>Sheer<span class="accent">Flow</span></span>
+      </a>
+      <div class="top-meta"><span id="mode-pill" class="pill">Connecting…</span><span class="mono" id="program-label">Local workbench</span></div>
+    </header>
+
+    <section id="login-view" class="login-wrap">
+      <div class="login-card panel">
+        <div class="eyebrow">AUTHORIZED VERIFICATION WORKFLOW STUDIO</div>
+        <h1>Orchestrate every step.<br><span class="accent">Keep every decision auditable.</span></h1>
+        <p class="muted">Sign in to your local SheerFlow workbench. Your SheerID credentials remain in the server-side environment.</p>
+        <form id="login-form" class="stack">
+          <label for="password">Local dashboard password</label>
+          <input id="password" name="password" type="password" minlength="20" autocomplete="current-password" required>
+          <button class="btn primary" type="submit">Unlock workbench <span>→</span></button>
+          <p class="form-error" id="login-error" role="alert"></p>
+        </form>
+        <div class="privacy-note"><span>●</span> Loopback-only · Session protected · No browser-side API secrets</div>
+      </div>
+    </section>
+
+    <section id="app-view" hidden>
+      <section class="hero panel">
+        <div>
+          <div class="eyebrow">SHEERID WORKFLOW STUDIO</div>
+          <h1>Verification <span class="accent">Workbench</span></h1>
+          <p class="muted">Create and manage authorized verification workflows using your own published program and API application.</p>
+        </div>
+        <div class="hero-actions"><button id="refresh-all" class="btn ghost">↻ Refresh queue</button><button id="logout" class="btn subtle">Sign out</button></div>
+      </section>
+
+      <section class="metrics">
+        <article class="metric panel"><span>All jobs</span><strong id="metric-total">0</strong><small>In local session</small></article>
+        <article class="metric panel"><span>In progress</span><strong id="metric-active">0</strong><small>Queued or awaiting review</small></article>
+        <article class="metric panel"><span>Approved</span><strong id="metric-approved">0</strong><small>Provider-confirmed</small></article>
+        <article class="metric panel"><span>Needs action</span><strong id="metric-action">0</strong><small>Operator or subject action</small></article>
+      </section>
+
+      <section class="main-grid">
+        <article class="panel form-panel">
+          <div class="section-head"><div><div class="eyebrow">NEW WORKFLOW</div><h2>Create verification</h2></div><span class="step-number">01</span></div>
+          <p class="muted small">Supply the exact subject fields required by your authorized program. Use accurate information and obtain consent.</p>
+          <form id="create-form" class="stack">
+            <label for="subject-json">Subject payload <span class="hint">JSON</span></label>
+            <textarea id="subject-json" rows="10" spellcheck="false" required>{
+  "firstName": "Alex",
+  "lastName": "Morgan",
+  "birthDate": "2002-04-16",
+  "email": "alex.morgan@example.test",
+  "organization": {
+    "id": 4597,
+    "name": "Example Technical Institute"
+  }
+}</textarea>
+            <div id="demo-options" hidden>
+              <label for="demo-scenario">Demo scenario</label>
+              <select id="demo-scenario">
+                <option value="approved">Approved</option>
+                <option value="pending">Pending review</option>
+                <option value="needs_document">Document required</option>
+                <option value="rejected">Rejected example</option>
+              </select>
+            </div>
+            <label class="consent-line"><input id="consent" type="checkbox" required><span>I am authorized to use this program and the submitted data is accurate and authorized.</span></label>
+            <button class="btn primary" type="submit">Create verification <span>＋</span></button>
+            <p id="create-error" class="form-error" role="alert"></p>
+          </form>
+        </article>
+
+        <article class="panel queue-panel">
+          <div class="section-head"><div><div class="eyebrow">LIVE OPERATIONS</div><h2>Verification queue</h2></div><span id="queue-count" class="pill">0 jobs</span></div>
+          <div id="empty-state" class="empty-state"><div class="empty-icon">◇</div><strong>No workflows yet</strong><p>Create a verification to see its state, event timeline and next action here.</p></div>
+          <div id="job-list" class="job-list"></div>
+        </article>
+      </section>
+
+      <section id="detail-panel" class="panel detail-panel" hidden>
+        <div class="section-head"><div><div class="eyebrow">WORKFLOW INSPECTOR</div><h2 id="detail-title">Verification details</h2></div><button id="close-detail" class="icon-btn" aria-label="Close details">×</button></div>
+        <div id="detail-summary" class="detail-summary"></div>
+        <div id="document-action" class="document-action" hidden>
+          <div><strong>Supporting document required</strong><p class="muted small">Select the authentic document requested by the provider. PDF, PNG and JPEG are accepted.</p></div>
+          <form id="document-form" class="upload-form"><input id="document-files" type="file" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" multiple required><button class="btn primary" type="submit">Upload documents</button></form>
+          <p id="document-error" class="form-error" role="alert"></p>
+        </div>
+        <div id="timeline" class="timeline"></div>
+      </section>
+
+      <footer class="footer"><span>SheerFlow is an independent third-party integration.</span><span>Local-only dashboard · Apache 2.0</span></footer>
+    </section>
+  </main>
+</body>
+</html>
