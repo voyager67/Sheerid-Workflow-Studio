@@ -61,7 +61,7 @@ test('a mismatched verification ID in a successful provider response is rejected
     tokenManager,
     fetchImpl: async () => json({ verificationId:'aaaaaaaaaaaaaaaaaaaaaaaa', currentStep:'success', errorIds:[] })
   });
-  await assert.rejects(client.getStatus(verificationId), error => error.code === 'API_RESPONSE_INVALID');
+  await assert.rejects(client.getStatus(verificationId), error => error.code === 'VERIFICATION_ID_MISMATCH');
 });
 
 test('status GET refreshes an expired bearer token once after HTTP 401', async () => {
@@ -225,4 +225,22 @@ test('an ambiguous 5xx write is surfaced as uncertain and is not automatically r
   });
   await assert.rejects(client.createVerification(programId), error => error.uncertain === true);
   assert.equal(calls, 1);
+});
+
+
+test('subject submission and document completion also reject mismatched verification IDs', async () => {
+  const wrongId='aaaaaaaaaaaaaaaaaaaaaaaa';
+  const client=new SheerIDClient({
+    tokenManager,
+    fetchImpl:async () => json({ verificationId:wrongId, currentStep:'pending', errorIds:[] })
+  });
+  await assert.rejects(
+    client.submitSubject(verificationId, collectUrl, { firstName:'Fictional' }),
+    error => error.code === 'VERIFICATION_ID_MISMATCH'
+  );
+  const completeUrl=`https://services.sheerid.com/rest/v2/verification/${verificationId}/step/completeDocUpload`;
+  await assert.rejects(
+    client.completeDocumentUpload(verificationId, completeUrl),
+    error => error.code === 'VERIFICATION_ID_MISMATCH'
+  );
 });
