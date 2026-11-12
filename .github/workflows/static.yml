@@ -44,11 +44,11 @@ jobs:
       - name: Verify deployed entry point and media
         run: |
           test -s "_site/index.html"
-          test -s "$RUNNER_TEMP/sheerflow-pages/404.html"
-          test -s "$RUNNER_TEMP/sheerflow-pages/styles.css"
-          test -s "$RUNNER_TEMP/sheerflow-pages/assets/sheerflow-banner.svg"
-          test -s "$RUNNER_TEMP/sheerflow-pages/assets/workbench.svg"
-          test -s "$RUNNER_TEMP/sheerflow-pages/demo/sheerflow-demo.mp4"
+          test -s "_site/404.html"
+          test -s "_site/styles.css"
+          test -s "_site/assets/sheerflow-banner.svg"
+          test -s "_site/assets/workbench.svg"
+          test -s "_site/demo/sheerflow-demo.mp4"
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
